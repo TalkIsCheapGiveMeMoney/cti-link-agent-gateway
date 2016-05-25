@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:redis="http://www.springframework.org/schema/redis" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		   http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket.xsd
+		   http://www.springframework.org/schema/redis http://www.springframework.org/schema/redis/spring-redis.xsd">
+
+	<!-- 开启对Spring MVC Controller的注解支持 -->
+	<mvc:annotation-driven />
+
+	<!-- 读取属性文件 -->
+	<bean id="propertyConfigurer" class="com.tinet.ctilink.util.PropertyUtil">
+		<property name="locations">
+			<list>
+				<value>classpath*:app.properties</value>
+			</list>
+		</property>
+	</bean>
+    
+	<!-- 定义Redis连接池 -->
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="50" />
+		<property name="maxIdle" value="50" />
+		<property name="minIdle" value="20" />
+	</bean>
+
+	<!-- 定义Spring Redis连接工厂 -->
+	<bean id="redisConnectionFactory" class="com.tinet.ctilink.jedis.CtiLinkJedisConnectionFactory">
+		<property name="hostName" value="${redis.url}" />
+		<property name="port" value="${redis.port}" />
+		<property name="database" value="1" />
+		<property name="usePool" value="true" />
+		<property name="poolConfig" ref="jedisPoolConfig" />
+	</bean>
+
+	<!-- 定义Spring Redis的序列化器 -->
+	<bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+	<bean id="jsonRedisSerializer" class="org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer" />
+
+	<!-- 定义Spring Redis模板 -->
+	<bean id="redisTemplate" class="com.tinet.ctilink.cache.RedisTemplate">
+		<property name="connectionFactory" ref="redisConnectionFactory" />
+	</bean>
+
+	<bean id="redisService" class="com.tinet.ctilink.cache.RedisService" />
+ 	
+	<!-- 定义接收BigQueue事件的Redis消息监听器 -->
+	<bean id="bigQueueEventListener" class="com.tinet.ctilink.agentgateway.BigQueueEventListener" />
+ 	
+	<!-- 注册Redis消息订阅的监听器 -->
+	<redis:listener-container>
+		<redis:listener ref="bigQueueEventListener" serializer="stringRedisSerializer" method="handleMessage" topic="cti-link.agent-gateway.event" />
+	</redis:listener-container>
+
+	<!-- Spring Session配置 -->
+	<util:constant static-field="org.springframework.session.data.redis.config.ConfigureRedisAction.NO_OP"/>
+	<bean class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration">
+		<property name="defaultRedisSerializer" ref="jsonRedisSerializer" />
+		<property name="maxInactiveIntervalInSeconds" value="36000" />
+	</bean>
+	<bean id="cookieSerializer" class="org.springframework.session.web.http.DefaultCookieSerializer">
+		<property name="cookieName" value="CTILINKSESSION" />
+		<property name="cookiePath" value="/" />
+		<property name="domainName" value="${application.domain}" />
+	</bean>
+
+	<!-- JMX监控输出  -->
+	<context:mbean-export />
+	<bean id="redisMonitor" class="com.tinet.ctilink.monitor.RedisMonitor" />
+	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
+		<property name="beans">
+			<map>
+				<entry key="Ctilink:type=RedisMonitor,app=agent-gateway" value-ref="redisMonitor" />
+			</map>
+		</property>
+	</bean>
+</beans>
