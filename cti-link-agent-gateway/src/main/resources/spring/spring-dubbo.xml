@@ -20,4 +20,6 @@
 	</context:component-scan>
 
 	<dubbo:reference id="agentService" interface="com.tinet.ctilink.bigqueue.service.AgentService" />
+
+	<dubbo:reference id="confAgentService" interface="com.tinet.ctilink.conf.service.v1.CtiLinkAgentService" />
 </beans>

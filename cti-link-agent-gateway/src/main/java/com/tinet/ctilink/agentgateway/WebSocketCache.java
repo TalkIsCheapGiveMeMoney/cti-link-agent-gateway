@@ -30,10 +30,6 @@ public class WebSocketCache {
 	public List<String> getQidsbyCid(int enterpriseId, String cno){
 		List<String> qids = CACHE.get(enterpriseId + cno);
 		if (qids == null || qids.size() == 0){
-//			CallAgent callAgent = new CallAgent();
-//			if (callAgent == null) {
-//				return null;
-//			}
 
 			List<QueueMember> queueMemberList = redisService.getList(Const.REDIS_DB_CONF_INDEX, String.format(CacheKey.QUEUE_MEMBER_ENTERPRISE_ID_CNO, enterpriseId, cno)
 					, QueueMember.class);

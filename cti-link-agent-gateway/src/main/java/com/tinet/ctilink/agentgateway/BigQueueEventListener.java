@@ -36,7 +36,6 @@ public class BigQueueEventListener {
 		// 在建立新连接之前，先踢掉同一个用户的其它连接，根据sessionId区分是否是新连接
 		String name = event.get(Variable.VARIABLE_EVENT).toString();
 
-		System.out.println(name);
 		// 这两事件先不处理
 		switch (name) {
 		case Event.INCOMING:
@@ -65,14 +64,14 @@ public class BigQueueEventListener {
 	private void sendMessage(Map event) {
 		//增加type类型
 		event.put(Variable.VARIABLE_TYPE, Variable.VARIABLE_EVENT);
-
-		String name = event.get(Variable.VARIABLE_NAME).toString();
+		String name = event.get(Variable.VARIABLE_EVENT).toString();
+		//暂时兼容老得工具条
+		event.put(Variable.VARIABLE_NAME, name);
+		event.remove(Variable.VARIABLE_EVENT);
 		String enterpriseId = event.get(Variable.VARIABLE_ENTERPRISE_ID).toString();
-		String cno = event.get(Variable.VARIABLE_CNO).toString();
-		String cid = enterpriseId + cno;
 		switch (name) {
 		case Event.STATUS:
-			
+			String cno = event.get(Variable.VARIABLE_CNO).toString();
 			List<String> qList = webSocketCache.getQidsbyCid(Integer.parseInt(enterpriseId), cno);
 			if(qList == null || qList.size() == 0){
 				return ;
@@ -104,6 +103,8 @@ public class BigQueueEventListener {
 			break;
 
 		default:
+			cno = event.get(Variable.VARIABLE_CNO).toString();
+			String cid = enterpriseId + cno;
 			// 发送给指定的座席
 			if (simpUserRegistry.getUser(cid) != null) {
 				messagingTemplate.convertAndSendToUser(cid, SocketConst.SEND_TO_USER_AGENT, event);

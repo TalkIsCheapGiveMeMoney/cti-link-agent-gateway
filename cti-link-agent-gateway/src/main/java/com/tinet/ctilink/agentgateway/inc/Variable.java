@@ -52,6 +52,9 @@ public class Variable {
     public static final String VARIABLE_PWD = "pwd"; // action/event字段：密码
     // pwd密文=md5(pwd明文+sessionId)
     public static final String VARIABLE_LOGIN_TYPE = "loginType"; // action/event字段：登录类型
+
+    public static final String VARIABLE_LOGIN_STATUS = "loginStatus"; // action/event字段：登录类型
+
     // 后台/前台
     // frontend/backend
     public static final String VARIABLE_HOLD_TYPE = "holdType"; // action/event字段:
@@ -287,16 +290,6 @@ public class Variable {
     public static final String VARIABLE_AGENT_LOCATION = "agentLocation";
     public static final String VARIABLE_AGENT_QUEUE = "agentQueue";
 
-    public static final String VARIABLE_CTIID = "ctiId";
-
-
-    public static final String OBJECT_TYPE_TEL = "tel";
-
-    public static final String OBJECT_TYPE_EXTEN = "exten";
-
-    public static final String OBJECT_TYPE_CNO = "cno";
-
-    public static final String VARIABLE_NOCARE = "nocare";
 
 
 }
