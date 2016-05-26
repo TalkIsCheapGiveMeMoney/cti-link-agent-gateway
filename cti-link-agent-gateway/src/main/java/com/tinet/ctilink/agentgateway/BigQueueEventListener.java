@@ -1,8 +1,13 @@
 package com.tinet.ctilink.agentgateway;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.tinet.ctilink.cache.CacheKey;
+import com.tinet.ctilink.cache.RedisService;
+import com.tinet.ctilink.conf.model.QueueMember;
+import com.tinet.ctilink.inc.Const;
 import com.tinet.ctilink.json.JSONObject;
 import com.tinet.ctilink.agentgateway.inc.Event;
 import com.tinet.ctilink.agentgateway.inc.Variable;
@@ -26,15 +31,18 @@ public class BigQueueEventListener {
 	private SimpUserRegistry simpUserRegistry;
 
 	@Autowired
-	private WebSocketCache webSocketCache;
+	private RedisService redisService;
 
 
 	public void handleMessage(String json, String channel) {
 		System.out.println(json);
-		Map event = JSONObject.getBean(json, Map.class);
-
-		// 在建立新连接之前，先踢掉同一个用户的其它连接，根据sessionId区分是否是新连接
+		Map<String, Object> event = JSONObject.getBean(json, Map.class);
+		//event type类型
+		event.put(Variable.VARIABLE_TYPE, Variable.VARIABLE_EVENT);
 		String name = event.get(Variable.VARIABLE_EVENT).toString();
+		//name
+		event.put(Variable.VARIABLE_NAME, name);
+		event.remove(Variable.VARIABLE_EVENT);
 
 		// 这两事件先不处理
 		switch (name) {
@@ -61,18 +69,14 @@ public class BigQueueEventListener {
 	 * 
 	 * @param event
 	 */
+
 	private void sendMessage(Map event) {
-		//增加type类型
-		event.put(Variable.VARIABLE_TYPE, Variable.VARIABLE_EVENT);
-		String name = event.get(Variable.VARIABLE_EVENT).toString();
-		//暂时兼容老得工具条
-		event.put(Variable.VARIABLE_NAME, name);
-		event.remove(Variable.VARIABLE_EVENT);
+		String name = event.get(Variable.VARIABLE_NAME).toString();
 		String enterpriseId = event.get(Variable.VARIABLE_ENTERPRISE_ID).toString();
 		switch (name) {
 		case Event.STATUS:
 			String cno = event.get(Variable.VARIABLE_CNO).toString();
-			List<String> qList = webSocketCache.getQidsbyCid(Integer.parseInt(enterpriseId), cno);
+			List<String> qList = getQids(Integer.parseInt(enterpriseId), cno);
 			if(qList == null || qList.size() == 0){
 				return ;
 			}
@@ -113,6 +117,20 @@ public class BigQueueEventListener {
 			break;
 		}
 
+	}
+
+	private List<String> getQids(int enterpriseId, String cno) {
+		List<QueueMember> queueMemberList = redisService.getList(Const.REDIS_DB_CONF_INDEX, String.format(CacheKey.QUEUE_MEMBER_ENTERPRISE_ID_CNO, enterpriseId, cno)
+				, QueueMember.class);
+		List<String> qList = new ArrayList<>();
+		for (QueueMember queueMember : queueMemberList) {
+			qList.add(queueMember.getEnterpriseId() + queueMember.getQno());
+		}
+		if(qList.size() > 0){
+			return qList;
+		}else{
+			return null;
+		}
 	}
 
 }

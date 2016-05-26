@@ -49,6 +49,14 @@ public abstract class AbstractActionHandler implements WebSocketActionHandler {
 
     public abstract String getAction();
 
+
+//    public String getAction () {
+//        String className = this.getClass().getName();
+//        String suffix = className.substring(className.lastIndexOf('.') + 1);
+//        String action = suffix.substring(0, suffix.length() - 13);
+//        return action.substring(0, 1).toLowerCase() + action.substring(1, action.length());
+//    }
+
     public AgentService getAgentService() {
         return null;
     }

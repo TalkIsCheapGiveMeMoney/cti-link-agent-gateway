@@ -49,11 +49,28 @@ public class LoginActionHandler implements WebSocketActionHandler {
         String cno = MapUtils.getString(content, Variable.VARIABLE_CNO);
         String bindTel = MapUtils.getString(content, Variable.VARIABLE_BIND_TEL);
         Integer bindType = MapUtils.getInteger(content, Variable.VARIABLE_BIND_TYPE);
-        Integer loginStatus = MapUtils.getInteger(content, Variable.VARIABLE_LOGIN_STATUS);
+        String loginStatus = MapUtils.getString(content, Variable.VARIABLE_LOGIN_STATUS);
 
         Map<String, Object> event;
 
-        //TODO 如果不是断线重连
+        //断线重连, 直接获取状态返回就可以
+        if (loginStatus.equals("noCare")) {
+            //发送status事件
+            Map<String, Object> params = new HashMap<>();
+            params.put(Variable.VARIABLE_ENTERPRISE_ID, MapUtils.getString(content, Variable.VARIABLE_ENTERPRISE_ID));// 企业id
+            params.put(Variable.VARIABLE_CNO, MapUtils.getString(content, Variable.VARIABLE_CNO));// 座席工号
+            ActionResponse statusResponse = agentService.status(params);
+            if (statusResponse.getCode() == 0) {
+                Map<String, Object> statusEvent = statusResponse.getValues();
+                statusEvent.put("event", "status");
+                statusEvent.put("enterpriseId", MapUtils.getString(content, Variable.VARIABLE_ENTERPRISE_ID));
+                statusEvent.put("cno", MapUtils.getString(content, Variable.VARIABLE_CNO));
+                redisService.convertAndSend(BigQueueCacheKey.AGENT_GATEWAY_EVENT_TOPIC, statusEvent);
+            }
+
+            return null;
+        }
+
         //updateClientOnline
         String result = confAgentService.updateAgentOnline(enterpriseId, cno, bindTel, bindType);
         if (!"success".equals(result)) {

@@ -12,8 +12,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,26 +28,31 @@ public class WebSocketFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
-		HttpSession session = req.getSession(false);
 
-//		if (session == null) {
+		System.out.println(req.getRequestURI());
+		if (req.getRequestURI().equals("/agent/info")
+				|| req.getRequestURI().startsWith("/session/")) {
+			chain.doFilter(request, response);
+			return;
+		}
+
+//		String sessionId = req.getParameter("sessionId");
+//		if (StringUtils.isEmpty(sessionId)) {
 //			res.sendError(403);
 //			return;
 //		}
 //
-//		// 从Session中获取获取座席登录对象，并存入ThreadLocal
-//		SessionMessage sessionMessage = (SessionMessage) session.getAttribute(SocketConst.AGENT_LOGIN);
-//		if (sessionMessage == null) {
+//		Session session = SessionFactory.build(sessionId);
+//		if (session == null || System.currentTimeMillis() - session.getTick() > 10000) {
 //			res.sendError(403);
 //			return;
 //		}
-//
-//		SessionMessage.save(sessionMessage);
-//
-//		String cid = sessionMessage.getEnterpriseId() + sessionMessage.getCno();
-		chain.doFilter(new UserRequestWrapper("60000012008", req), response);
-
-//		chain.doFilter(request, response);
+		String cid = req.getParameter("cid");
+		if (StringUtils.isEmpty(cid)) {
+			res.sendError(403);
+			return;
+		}
+		chain.doFilter(new UserRequestWrapper(cid, req), response);
 	}
 
 	@Override

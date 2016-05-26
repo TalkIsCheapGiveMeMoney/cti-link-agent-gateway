@@ -49,7 +49,6 @@
  	
 	<!-- 定义接收BigQueue事件的Redis消息监听器 -->
 	<bean id="bigQueueEventListener" class="com.tinet.ctilink.agentgateway.BigQueueEventListener" />
- 	
 	<!-- 注册Redis消息订阅的监听器 -->
 	<redis:listener-container>
 		<redis:listener ref="bigQueueEventListener" serializer="stringRedisSerializer" method="handleMessage" topic="cti-link.agent-gateway.event" />
