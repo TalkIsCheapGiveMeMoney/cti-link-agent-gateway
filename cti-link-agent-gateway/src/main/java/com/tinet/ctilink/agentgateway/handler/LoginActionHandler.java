@@ -4,12 +4,9 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.tinet.ctilink.bigqueue.entity.ActionResponse;
 import com.tinet.ctilink.bigqueue.inc.BigQueueCacheKey;
 import com.tinet.ctilink.bigqueue.service.AgentService;
-import com.tinet.ctilink.agentgateway.WebSocketActionHandler;
 import com.tinet.ctilink.agentgateway.inc.Action;
-import com.tinet.ctilink.agentgateway.inc.ErrorMsg;
 import com.tinet.ctilink.agentgateway.inc.SocketConst;
 import com.tinet.ctilink.agentgateway.inc.Variable;
-import com.tinet.ctilink.agentgateway.inc.ActionErrorUtil;
 import com.tinet.ctilink.cache.RedisService;
 import com.tinet.ctilink.conf.service.v1.CtiLinkAgentService;
 import org.apache.commons.collections.MapUtils;
@@ -23,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class LoginActionHandler implements WebSocketActionHandler {
+public class LoginActionHandler extends AbstractActionHandler {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Reference
@@ -74,7 +71,7 @@ public class LoginActionHandler implements WebSocketActionHandler {
         //updateClientOnline
         String result = confAgentService.updateAgentOnline(enterpriseId, cno, bindTel, bindType);
         if (!"success".equals(result)) {
-            event = ActionErrorUtil.createFailResponse(content, -1, result);
+            event = Action.createFailResponse(content, -1, result);
             messagingTemplate.convertAndSendToUser(cid, SocketConst.SEND_TO_USER_AGENT, event);
             return null;
         }
@@ -82,7 +79,7 @@ public class LoginActionHandler implements WebSocketActionHandler {
             ActionResponse response = agentService.login(content);
 
             if (response.getCode() == 0) {  //success
-                event = ActionErrorUtil.createSuccessResponse(content);
+                event = Action.createSuccessResponse(content);
                 event.put(Variable.VARIABLE_SESSION_ID, MapUtils.getString(content, Variable.VARIABLE_SESSION_ID)); // 当前session
                 event.put(Variable.VARIABLE_ENTERPRISE_ID, enterpriseId);// 企业id
                 event.put(Variable.VARIABLE_CNO, cno);// 座席工号
@@ -102,11 +99,11 @@ public class LoginActionHandler implements WebSocketActionHandler {
                     redisService.convertAndSend(BigQueueCacheKey.AGENT_GATEWAY_EVENT_TOPIC, statusEvent);
                 }
             } else {
-                event = ActionErrorUtil.createFailResponse(content, response.getCode(), response.getMsg());
+                event = Action.createFailResponse(content, response.getCode(), response.getMsg());
             }
 
         } catch (Exception e) {
-            event = ActionErrorUtil.createFailResponse(content, ErrorMsg.ERRORCODE_BAD_PARAM, "bad param");
+            event = Action.createFailResponse(content, -1, "bad param");
             logger.error("AbstractActionHandler error: ", e);
         }
 

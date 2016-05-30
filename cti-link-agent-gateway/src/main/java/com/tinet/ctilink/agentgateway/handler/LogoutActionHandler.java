@@ -23,7 +23,7 @@ import java.util.Map;
  * @author zoubo
  */
 @Component
-public class LogoutActionHandler implements WebSocketActionHandler {
+public class LogoutActionHandler extends AbstractActionHandler {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -46,13 +46,13 @@ public class LogoutActionHandler implements WebSocketActionHandler {
             ActionResponse response = agentService.logout(content);
 
             if (response.getCode() == 0) {  //success
-                event = ActionErrorUtil.createSuccessResponse(content);
+                event = Action.createSuccessResponse(content);
             } else {
-                event = ActionErrorUtil.createFailResponse(content, response.getCode(), response.getMsg());
+                event = Action.createFailResponse(content, response.getCode(), response.getMsg());
             }
 
         } catch (Exception e) {
-            event = ActionErrorUtil.createFailResponse(content, ErrorMsg.ERRORCODE_BAD_PARAM, "bad param");
+            event = Action.createFailResponse(content, -1, "bad param");
             logger.error("AbstractActionHandler error: ", e);
         }
 

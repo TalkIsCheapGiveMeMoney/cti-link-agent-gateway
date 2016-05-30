@@ -54,7 +54,7 @@ public class PauseActionHandler extends AbstractActionHandler {
             ActionResponse response = agentService.pause(content);
 
             if (response.getCode() == 0) {  //success
-                event = ActionErrorUtil.createSuccessResponse(content);
+                event = Action.createSuccessResponse(content);
 
                 //发送status事件
                 Map<String, Object> params = new HashMap<>();
@@ -69,11 +69,11 @@ public class PauseActionHandler extends AbstractActionHandler {
                     redisService.convertAndSend(BigQueueCacheKey.AGENT_GATEWAY_EVENT_TOPIC, statusEvent);
                 }
             } else {
-                event = ActionErrorUtil.createFailResponse(content, response.getCode(), response.getMsg());
+                event = Action.createFailResponse(content, response.getCode(), response.getMsg());
             }
 
         } catch (Exception e) {
-            event = ActionErrorUtil.createFailResponse(content, ErrorMsg.ERRORCODE_BAD_PARAM, "bad param");
+            event = Action.createFailResponse(content, -1, "bad param");
             logger.error("AbstractActionHandler error: ", e);
         }
 

@@ -5,9 +5,7 @@ import com.tinet.ctilink.bigqueue.entity.ActionResponse;
 import com.tinet.ctilink.bigqueue.service.AgentService;
 import com.tinet.ctilink.agentgateway.WebSocketActionHandler;
 import com.tinet.ctilink.agentgateway.inc.Action;
-import com.tinet.ctilink.agentgateway.inc.ErrorMsg;
 import com.tinet.ctilink.agentgateway.inc.SocketConst;
-import com.tinet.ctilink.agentgateway.inc.ActionErrorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
@@ -15,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-public class QueueStatusActionHandler implements WebSocketActionHandler {
+public class QueueStatusActionHandler extends AbstractActionHandler {
 
     @Override
     public String getAction() {
@@ -35,14 +33,14 @@ public class QueueStatusActionHandler implements WebSocketActionHandler {
         try {
             ActionResponse response = agentService.queueStatus(content);
             if (response.getCode() == 0) {  //success
-                event = ActionErrorUtil.createSuccessResponse(content);
+                event = Action.createSuccessResponse(content);
                 event.put("queueStatus", response.getValues());
             } else {
-                event = ActionErrorUtil.createFailResponse(content, response.getCode(), response.getMsg());
+                event = Action.createFailResponse(content, response.getCode(), response.getMsg());
             }
 
         } catch (Exception e) {
-            event = ActionErrorUtil.createFailResponse(content, ErrorMsg.ERRORCODE_BAD_PARAM, "bad param");
+            event = Action.createFailResponse(content, -1, "bad param");
         }
 
         messagingTemplate.convertAndSendToUser(cid, SocketConst.SEND_TO_USER_AGENT, event);
