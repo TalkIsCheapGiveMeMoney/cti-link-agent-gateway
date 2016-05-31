@@ -13,15 +13,15 @@ public class MultiplePathMatcher extends AntPathMatcher {
 
 	@Override
 	public boolean match(String pattern, String path) {
-		int patternSeparatorPostion = pattern.lastIndexOf("/");
-		int pathSeparatorPostion = path.lastIndexOf("/");
+		int patternSeparatorPosition = pattern.lastIndexOf("/");
+		int pathSeparatorPosition = path.lastIndexOf("/");
 
-		if (patternSeparatorPostion > 0 && pathSeparatorPostion > 0) {
-			String patternPrefix = pattern.substring(0, patternSeparatorPostion);
-			String pathPrefix = path.substring(0, pathSeparatorPostion);
+		if (patternSeparatorPosition > 0 && pathSeparatorPosition > 0) {
+			String patternPrefix = pattern.substring(0, patternSeparatorPosition);
+			String pathPrefix = path.substring(0, pathSeparatorPosition);
 			if (patternPrefix.equals(pathPrefix)) {
-				String patternSuffix = pattern.substring(patternSeparatorPostion + 1);
-				String pathSuffix = path.substring(pathSeparatorPostion + 1);
+				String patternSuffix = pattern.substring(patternSeparatorPosition + 1);
+				String pathSuffix = path.substring(pathSeparatorPosition + 1);
 				if (patternSuffix.equals(pathSuffix)) {
 					return true;
 				}
