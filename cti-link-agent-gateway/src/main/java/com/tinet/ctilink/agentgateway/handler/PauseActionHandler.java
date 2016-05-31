@@ -58,14 +58,14 @@ public class PauseActionHandler extends AbstractActionHandler {
 
                 //发送status事件
                 Map<String, Object> params = new HashMap<>();
-                params.put(Variable.VARIABLE_ENTERPRISE_ID, MapUtils.getString(content, Variable.VARIABLE_ENTERPRISE_ID));// 企业id
-                params.put(Variable.VARIABLE_CNO, MapUtils.getString(content, Variable.VARIABLE_CNO));// 座席工号
+                params.put(Variable.VARIABLE_ENTERPRISE_ID, enterpriseId);// 企业id
+                params.put(Variable.VARIABLE_CNO, cno);// 座席工号
                 ActionResponse statusResponse = agentService.status(params);
                 if (statusResponse.getCode() == 0) {
                     Map<String, Object> statusEvent = statusResponse.getValues();
                     statusEvent.put("event", "status");
-                    statusEvent.put("enterpriseId", MapUtils.getString(content, Variable.VARIABLE_ENTERPRISE_ID));
-                    statusEvent.put("cno", MapUtils.getString(content, Variable.VARIABLE_CNO));
+                    statusEvent.put("enterpriseId", enterpriseId);
+                    statusEvent.put("cno", cno);
                     redisService.convertAndSend(BigQueueCacheKey.AGENT_GATEWAY_EVENT_TOPIC, statusEvent);
                 }
             } else {

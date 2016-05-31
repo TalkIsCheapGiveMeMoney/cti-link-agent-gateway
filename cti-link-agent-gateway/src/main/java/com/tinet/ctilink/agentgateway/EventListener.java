@@ -75,7 +75,7 @@ public class EventListener {
 	/**
 	 * 执行往座席端发送消息
 	 * 
-	 * @param event
+	 * @param event 事件
 	 */
 
 	private void sendMessage(Map event) {
