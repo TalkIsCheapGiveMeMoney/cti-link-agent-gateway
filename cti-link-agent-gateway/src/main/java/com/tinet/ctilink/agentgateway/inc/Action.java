@@ -1,5 +1,10 @@
 package com.tinet.ctilink.agentgateway.inc;
 
+import org.apache.commons.collections.MapUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author fengwei //
  * @date 16/5/18 18:02
@@ -74,4 +79,37 @@ public class Action {
 
     public static final String WHISPER = "whisper";
 
+
+
+    static public Map<String,Object> createFailResponse(Map<String, Object> msg , int code , String resMsg){
+        Map<String,Object> response = new HashMap<>();
+        response.put(Variable.VARIABLE_TYPE, "response");
+        String resType = MapUtils.getString(msg, Variable.VARIABLE_TYPE);
+        String utid = MapUtils.getString(msg, Variable.VARIABLE_UTID);
+        response.put(Variable.VARIABLE_CODE, "" + code);
+        response.put(Variable.VARIABLE_MSG, resMsg);
+        if (resType != null) {
+            response.put(Variable.VARIABLE_RES_TYPE, resType);
+        }
+        if(utid != null){
+            response.put(Variable.VARIABLE_UTID, utid);
+        }
+        return response;
+    }
+
+    static public Map<String,Object> createSuccessResponse(Map<String, Object> msg){
+        Map<String,Object> response = new HashMap<>();
+        response.put(Variable.VARIABLE_TYPE, "response");
+        String resType = MapUtils.getString(msg, Variable.VARIABLE_TYPE);
+        String utid = MapUtils.getString(msg, Variable.VARIABLE_UTID);
+        response.put(Variable.VARIABLE_CODE, "0");
+        response.put(Variable.VARIABLE_MSG, "ok");
+        if (resType != null) {
+            response.put(Variable.VARIABLE_RES_TYPE, resType);
+        }
+        if(utid != null){
+            response.put(Variable.VARIABLE_UTID, utid);
+        }
+        return response;
+    }
 }

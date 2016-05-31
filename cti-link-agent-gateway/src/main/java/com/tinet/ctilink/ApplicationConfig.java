@@ -5,6 +5,7 @@ import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.session.ExpiringSession;
 import org.springframework.session.web.socket.config.annotation.AbstractSessionWebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
@@ -12,10 +13,10 @@ import com.tinet.ctilink.agentgateway.MultiplePathMatcher;
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class ApplicationConfig extends AbstractSessionWebSocketMessageBrokerConfigurer<ExpiringSession> {
+public class ApplicationConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
 	@Override
-	public void configureStompEndpoints(StompEndpointRegistry registry) {
+	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry.addEndpoint("/agent").setAllowedOrigins("*").withSockJS()
 		// .setStreamBytesLimit(512 * 1024)
 		// .setHttpMessageCacheSize(1000)

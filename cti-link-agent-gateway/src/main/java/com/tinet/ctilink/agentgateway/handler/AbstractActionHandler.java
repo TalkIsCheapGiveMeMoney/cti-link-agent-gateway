@@ -1,11 +1,10 @@
 package com.tinet.ctilink.agentgateway.handler;
 
+import com.tinet.ctilink.agentgateway.inc.Action;
 import com.tinet.ctilink.bigqueue.entity.ActionResponse;
 import com.tinet.ctilink.bigqueue.service.AgentService;
 import com.tinet.ctilink.agentgateway.WebSocketActionHandler;
-import com.tinet.ctilink.agentgateway.inc.ErrorMsg;
 import com.tinet.ctilink.agentgateway.inc.SocketConst;
-import com.tinet.ctilink.agentgateway.inc.ActionErrorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -32,13 +31,13 @@ public abstract class AbstractActionHandler implements WebSocketActionHandler {
             ActionResponse response = (ActionResponse) object;
 
             if (response.getCode() == 0) {  //success
-                event = ActionErrorUtil.createSuccessResponse(content);
+                event = Action.createSuccessResponse(content);
             } else {
-                event = ActionErrorUtil.createFailResponse(content, response.getCode(), response.getMsg());
+                event = Action.createFailResponse(content, response.getCode(), response.getMsg());
             }
 
         } catch (Exception e) {
-            event = ActionErrorUtil.createFailResponse(content, ErrorMsg.ERRORCODE_BAD_PARAM, "bad param");
+            event = Action.createFailResponse(content, -1, "bad param");
             logger.error("AbstractActionHandler error: ", e);
         }
 

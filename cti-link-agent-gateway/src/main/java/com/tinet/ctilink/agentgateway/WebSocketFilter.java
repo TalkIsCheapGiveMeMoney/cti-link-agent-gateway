@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
+import com.tinet.ctilink.agentgateway.util.SessionFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -30,28 +31,28 @@ public class WebSocketFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 
 		System.out.println(req.getRequestURI());
+		System.out.println(req.getQueryString());
 		if (req.getRequestURI().equals("/agent/info")
 				|| req.getRequestURI().startsWith("/session/")) {
 			chain.doFilter(request, response);
 			return;
 		}
 
-//		String sessionId = req.getParameter("sessionId");
-//		if (StringUtils.isEmpty(sessionId)) {
-//			res.sendError(403);
-//			return;
-//		}
-//
-//		Session session = SessionFactory.build(sessionId);
-//		if (session == null || System.currentTimeMillis() - session.getTick() > 10000) {
-//			res.sendError(403);
-//			return;
-//		}
-		String cid = req.getParameter("cid");
-		if (StringUtils.isEmpty(cid)) {
+		String sessionId = req.getParameter("sessionId");
+		if (StringUtils.isEmpty(sessionId)) {
 			res.sendError(403);
 			return;
 		}
+
+		boolean result = SessionFactory.checkSessionId(sessionId);
+		if (!result) {
+			res.sendError(403);
+			return;
+		}
+
+		//根据sessionId获得cid
+		String cid = sessionId;
+
 		chain.doFilter(new UserRequestWrapper(cid, req), response);
 	}
 
