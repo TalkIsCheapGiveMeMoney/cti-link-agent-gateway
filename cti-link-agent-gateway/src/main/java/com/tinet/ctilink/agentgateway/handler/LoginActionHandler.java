@@ -46,12 +46,12 @@ public class LoginActionHandler extends AbstractActionHandler {
         String cno = MapUtils.getString(content, Variable.VARIABLE_CNO);
         String bindTel = MapUtils.getString(content, Variable.VARIABLE_BIND_TEL);
         Integer bindType = MapUtils.getInteger(content, Variable.VARIABLE_BIND_TYPE);
-        String loginStatus = MapUtils.getString(content, Variable.VARIABLE_LOGIN_STATUS);
+        Integer loginStatus = MapUtils.getInteger(content, Variable.VARIABLE_LOGIN_STATUS);
 
         Map<String, Object> event;
 
         //断线重连, 直接获取状态返回就可以
-        if (loginStatus.equals("noCare")) {
+        if (loginStatus == -1) {
             //发送status事件
             Map<String, Object> params = new HashMap<>();
             params.put(Variable.VARIABLE_ENTERPRISE_ID, MapUtils.getString(content, Variable.VARIABLE_ENTERPRISE_ID));// 企业id
@@ -104,7 +104,7 @@ public class LoginActionHandler extends AbstractActionHandler {
 
         } catch (Exception e) {
             event = Action.createFailResponse(content, -1, "bad param");
-            logger.error("AbstractActionHandler error: ", e);
+            logger.error("LoginActionHandler error: ", e);
         }
 
         messagingTemplate.convertAndSendToUser(cid, SocketConst.SEND_TO_USER_AGENT, event);

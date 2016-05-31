@@ -3,7 +3,7 @@ package com.tinet.ctilink.agentgateway.handler;
 import com.tinet.ctilink.agentgateway.inc.Action;
 import com.tinet.ctilink.bigqueue.entity.ActionResponse;
 import com.tinet.ctilink.bigqueue.service.AgentService;
-import com.tinet.ctilink.agentgateway.WebSocketActionHandler;
+import com.tinet.ctilink.agentgateway.ActionHandler;
 import com.tinet.ctilink.agentgateway.inc.SocketConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import java.util.Map;
  * @author fengwei //
  * @date 16/5/24 09:32
  */
-public abstract class AbstractActionHandler implements WebSocketActionHandler {
+public abstract class AbstractActionHandler implements ActionHandler {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 

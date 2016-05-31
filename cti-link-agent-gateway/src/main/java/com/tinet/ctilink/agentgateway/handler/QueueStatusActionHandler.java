@@ -3,7 +3,6 @@ package com.tinet.ctilink.agentgateway.handler;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.tinet.ctilink.bigqueue.entity.ActionResponse;
 import com.tinet.ctilink.bigqueue.service.AgentService;
-import com.tinet.ctilink.agentgateway.WebSocketActionHandler;
 import com.tinet.ctilink.agentgateway.inc.Action;
 import com.tinet.ctilink.agentgateway.inc.SocketConst;
 import org.springframework.beans.factory.annotation.Autowired;

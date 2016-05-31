@@ -2,7 +2,7 @@ package com.tinet.ctilink.agentgateway.handler;
 
 import java.util.Map;
 
-import com.tinet.ctilink.agentgateway.WebSocketActionHandler;
+import com.tinet.ctilink.agentgateway.ActionHandler;
 import com.tinet.ctilink.agentgateway.inc.Action;
 import com.tinet.ctilink.agentgateway.inc.SocketConst;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class PingActionHandler implements WebSocketActionHandler {
+public class PingActionHandler implements ActionHandler {
 	@Autowired
 	private SimpMessagingTemplate messagingTemplate;
 

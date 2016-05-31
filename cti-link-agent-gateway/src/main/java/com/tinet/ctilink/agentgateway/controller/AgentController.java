@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.tinet.ctilink.agentgateway.WebSocketActionHandler;
+import com.tinet.ctilink.agentgateway.ActionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +19,9 @@ public class AgentController {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private List<WebSocketActionHandler> handlerList;
+    private List<ActionHandler> handlerList;
 
-    private Map<String, WebSocketActionHandler> handlerMap;
+    private Map<String, ActionHandler> handlerMap;
 
 
     /**
@@ -44,15 +44,15 @@ public class AgentController {
      * @param action
      * @return
      */
-    private WebSocketActionHandler getHandler(String action) {
+    private ActionHandler getHandler(String action) {
         if (handlerMap == null) {
-            handlerMap = new HashMap<String, WebSocketActionHandler>();
-            for (WebSocketActionHandler handler : handlerList) {
+            handlerMap = new HashMap<String, ActionHandler>();
+            for (ActionHandler handler : handlerList) {
                 handlerMap.put(handler.getAction(), handler);
             }
         }
 
-        WebSocketActionHandler handler = handlerMap.get(action);
+        ActionHandler handler = handlerMap.get(action);
 
         if (handler == null) {
             logger.error("AgentActionHandler for AmiAction: " + action + " not found.");

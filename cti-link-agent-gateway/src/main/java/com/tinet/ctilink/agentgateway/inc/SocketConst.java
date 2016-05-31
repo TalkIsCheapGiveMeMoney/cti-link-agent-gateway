@@ -20,4 +20,7 @@ public class SocketConst {
 
 
 	public static final String AGENT_LOGIN = "agent_login";
+
+	public static final String AGENT_GATEWAY_SESSION_ID = "agent_gateway_session_%s";
+
 }
