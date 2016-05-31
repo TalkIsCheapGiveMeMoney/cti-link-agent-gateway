@@ -8,7 +8,7 @@ import java.util.Map;
  * @author Jiangsl
  *
  */
-public interface WebSocketActionHandler {
+public interface ActionHandler {
 	String getAction();
 
 	String handle(String cid, Map<String, Object> content);

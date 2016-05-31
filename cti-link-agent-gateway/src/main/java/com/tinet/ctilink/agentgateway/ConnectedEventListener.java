@@ -22,8 +22,8 @@ import java.util.Map;
  *
  */
 @Component
-public class WebSocketConnectedEventListener implements ApplicationListener<SessionConnectedEvent> {
-	private static Logger logger = LoggerFactory.getLogger(WebSocketConnectedEventListener.class);
+public class ConnectedEventListener implements ApplicationListener<SessionConnectedEvent> {
+	private static Logger logger = LoggerFactory.getLogger(ConnectedEventListener.class);
 
 	@Autowired
 	private RedisService redisService;

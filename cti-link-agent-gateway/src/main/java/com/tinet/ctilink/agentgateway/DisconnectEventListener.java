@@ -14,8 +14,8 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
  *
  */
 @Component
-public class WebSocketDisconnectEventListener implements ApplicationListener<SessionDisconnectEvent> {
-	private static Logger logger = LoggerFactory.getLogger(WebSocketDisconnectEventListener.class);
+public class DisconnectEventListener implements ApplicationListener<SessionDisconnectEvent> {
+	private static Logger logger = LoggerFactory.getLogger(DisconnectEventListener.class);
 
 	@Override
 	public void onApplicationEvent(final SessionDisconnectEvent event) {

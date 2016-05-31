@@ -1,6 +1,6 @@
 package com.tinet.ctilink.agentgateway.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tinet.ctilink.agentgateway.inc.SocketConst;
 import com.tinet.ctilink.agentgateway.util.SessionFactory;
 import com.tinet.ctilink.cache.RedisService;
 import com.tinet.ctilink.inc.Const;
@@ -19,20 +19,16 @@ import java.util.concurrent.TimeUnit;
 @Controller
 @RequestMapping("/session")
 public class SessionController {
-    private static final String AGENT_GATEWAY_SESSION_ID = "agent_gateway_session_%s";
 
     @Autowired
     private RedisService redisService;
-
-    private ObjectMapper mapper = new ObjectMapper();
-
 
     @RequestMapping("/{cid}")
     @ResponseBody
     public String getSession(@PathVariable("cid") String cid) throws Exception {
         String sessionId = SessionFactory.getSessionId(cid);
         System.out.println(sessionId);
-        String key = String.format(AGENT_GATEWAY_SESSION_ID, sessionId);
+        String key = String.format(SocketConst.AGENT_GATEWAY_SESSION_ID, sessionId);
 
         // 如果sessionId已存在?
 

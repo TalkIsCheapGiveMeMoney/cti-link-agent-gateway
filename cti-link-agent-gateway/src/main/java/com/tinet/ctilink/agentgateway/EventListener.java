@@ -12,6 +12,8 @@ import com.tinet.ctilink.json.JSONObject;
 import com.tinet.ctilink.agentgateway.inc.Event;
 import com.tinet.ctilink.agentgateway.inc.Variable;
 import com.tinet.ctilink.agentgateway.inc.SocketConst;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
@@ -22,7 +24,8 @@ import org.springframework.messaging.simp.user.SimpUserRegistry;
  * @author Jiangsl
  *
  */
-public class BigQueueEventListener {
+public class EventListener {
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private SimpMessagingTemplate messagingTemplate;
@@ -35,8 +38,13 @@ public class BigQueueEventListener {
 
 
 	public void handleMessage(String json, String channel) {
-		System.out.println(json);
-		Map<String, Object> event = JSONObject.getBean(json, Map.class);
+		if (logger.isInfoEnabled()) {
+			logger.info(channel + " receive an event : " + json);
+		}
+		JSONObject event = JSONObject.fromObject(json);
+		if (event == null) {
+			return;
+		}
 		//event type类型
 		event.put(Variable.VARIABLE_TYPE, Variable.VARIABLE_EVENT);
 		String name = event.get(Variable.VARIABLE_EVENT).toString();

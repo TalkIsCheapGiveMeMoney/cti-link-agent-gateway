@@ -8,7 +8,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PreviewOutcallCancelActionHandler extends AbstractActionHandler {
+public class PreviewOucallCancelActionHandler extends AbstractActionHandler {
 
     @Override
     public String getAction() {
