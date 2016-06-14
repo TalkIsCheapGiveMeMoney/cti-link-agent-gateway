@@ -39,7 +39,7 @@ public class QueueStatusActionHandler extends AbstractActionHandler {
             }
 
         } catch (Exception e) {
-            event = Action.createFailResponse(content, -1, "bad param");
+            event = Action.createFailResponse(content, -1, "exception at agent-gateway");
         }
 
         messagingTemplate.convertAndSendToUser(cid, SocketConst.SEND_TO_USER_AGENT, event);

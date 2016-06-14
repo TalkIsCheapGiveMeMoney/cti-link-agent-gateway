@@ -40,7 +40,7 @@ public class PreviewOutcallActionHandler extends AbstractActionHandler {
             }
 
         } catch (Exception e) {
-            event = Action.createFailResponse(content, -1, "bad param");
+            event = Action.createFailResponse(content, -1, "exception at agent-gateway");
             logger.error("AbstractActionHandler error: ", e);
         }
 
