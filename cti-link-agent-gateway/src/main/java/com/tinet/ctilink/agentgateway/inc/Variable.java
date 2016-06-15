@@ -23,6 +23,7 @@ public class Variable {
 
     public static final String VARIABLE_ENTERPRISE_ID = "enterpriseId";
     public static final String VARIABLE_QID = "qid";
+    public static final String VARIABLE_QNO = "qno";
     public static final String VARIABLE_BIND_TEL = "bindTel"; // action/event字段：绑定电话
     public static final String VARIABLE_BIND_TYPE = "bindType"; // 绑定电话类型
 

@@ -51,19 +51,6 @@ public class UnpauseActionHandler extends AbstractActionHandler {
 
             if (response.getCode() == 0) {  //success
                 event = Action.createSuccessResponse(content);
-
-                //发送status事件
-                Map<String, Object> params = new HashMap<>();
-                params.put(Variable.VARIABLE_ENTERPRISE_ID, enterpriseId);// 企业id
-                params.put(Variable.VARIABLE_CNO, cno);// 座席工号
-                ActionResponse statusResponse = agentService.status(params);
-                if (statusResponse.getCode() == 0) {
-                    Map<String, Object> statusEvent = statusResponse.getValues();
-                    statusEvent.put("event", "status");
-                    statusEvent.put("enterpriseId", enterpriseId);
-                    statusEvent.put("cno", cno);
-                    redisService.convertAndSend(BigQueueCacheKey.AGENT_GATEWAY_EVENT_TOPIC, statusEvent);
-                }
             } else {
                 event = Action.createFailResponse(content, response.getCode(), response.getMsg());
             }
