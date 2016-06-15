@@ -40,8 +40,8 @@ public class PreviewOutcallActionHandler extends AbstractActionHandler {
             }
 
         } catch (Exception e) {
-            event = Action.createFailResponse(content, -1, "bad param");
-            logger.error("PreviewOutcallActionHandler error: ", e);
+            event = Action.createFailResponse(content, -1, "exception at agent-gateway");
+            logger.error("AbstractActionHandler error: ", e);
         }
 
         messagingTemplate.convertAndSendToUser(cid, SocketConst.SEND_TO_USER_AGENT, event);
