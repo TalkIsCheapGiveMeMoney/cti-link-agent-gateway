@@ -48,7 +48,7 @@ public class LogoutActionHandler extends AbstractActionHandler {
 
         } catch (Exception e) {
             event = Action.createFailResponse(content, -1, "bad param");
-            logger.error("AbstractActionHandler error: ", e);
+            logger.error("LogoutActionHandler error: ", e);
         }
 
         messagingTemplate.convertAndSendToUser(cid, SocketConst.SEND_TO_USER_AGENT, event);
